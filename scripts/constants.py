@@ -4,7 +4,7 @@ fr_path = "assets/Delphine_et_l_oiseau.txt"
 en_path = "assets/Delphine_and_the_bird.txt"
 deepl_path = "assets/Delphine_and_the_bird_DEEPL.txt"
 deepl_path_alt = "assets/Delphine_and_the_bird_DEEPL_CHUNK.txt"
-gt_path = "assets/Delphine_and_the_bird_GT.txt"
+gt_path = "assets/Delphine_and_the_bird_GT_MANUAL.txt"
 
 # The processed_{}_path vars should normally not be used and text should be reprocessed on every run.
 
