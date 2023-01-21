@@ -3,6 +3,7 @@ include/
 lib/
 lib64/
 lib64
+results/
 share/
 scripts/__pycache__
 pyvenv.cfg
