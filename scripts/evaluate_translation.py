@@ -13,6 +13,8 @@ processed_deepl = []
 processed_gt = []
 common_len = 0
 
+human_length_plotted = False
+
 # methods 5 and 7 give incorrect (>1) scores to some sentences and must be left out
 # method 2 gives the highest sentence average
 #  corpus BLEU score barely changes
@@ -225,13 +227,13 @@ def draw_graphs_from_json(version,metric):
 
     # 2. Correlation of sentence scores and sentence lengths
 
-    by_length_x = stats_data['mt_sentence_lengths']
+    by_length_x = np.sort(stats_data['mt_sentence_lengths'])
     by_length_y = by_sentence_y
 
     plt.clf()
     plt.grid(True)
 
-    plt.xlabel("Sentence length in machine translation (words)")
+    plt.xlabel(f"Sentence length in {version} translation (words)")
     plt.ylabel(f"{metric} score")
     plt.title(f"{metric} sentence scores by sentence length")
 
@@ -284,6 +286,43 @@ def draw_graphs_from_json(version,metric):
 
     plt.savefig(score_repartition_path[version][metric])
 
+    # 4. Length repartition (proof of concept)
+
+    global human_length_plotted
+
+    if not human_length_plotted:
+
+        human_length_plotted = True
+
+        human_length_repartition_x = np.sort(stats_data['human_sentence_lengths']);
+        human_length_repartition_y = [calculate_proportion_under_ref(human_length_repartition_x[i],human_length_repartition_x) for i in range(corpus_size)]
+
+        plt.clf()
+        plt.grid(True)
+
+        plt.xlabel("Human sentence length (words)")
+        plt.ylabel("Proportion of human sentence lengths under value")
+
+        plt.title("Repartition of sentence lengths in reference human translation")
+
+        plt.scatter(human_length_repartition_x, human_length_repartition_y)
+
+        plt.savefig(human_length_repartition_path)
+
+    mt_length_repartition_x = np.sort(stats_data['mt_sentence_lengths'])
+    mt_length_repartition_y = [calculate_proportion_under_ref(mt_length_repartition_x[i],mt_length_repartition_x) for i in range(corpus_size)]
+
+    plt.clf()
+    plt.grid(True)
+
+    plt.xlabel(f"{version} sentence length (words)")
+    plt.ylabel(f"Proportion of {version} sentence lengths under value")
+
+    plt.title(f"Repartition of sentence lengths in {version} translation")
+
+    plt.scatter(mt_length_repartition_x,mt_length_repartition_y)
+
+    plt.savefig(mt_length_repartition_path[version])
 
 if __name__ == "__main__":
     # create_debug_files()

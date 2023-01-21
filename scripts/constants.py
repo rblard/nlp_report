@@ -23,7 +23,7 @@ second_level_keys = ["BLEU","NIST","METEOR"]
 
 # Generate path hierarchy for the generated files
 
-def create_path_dic(basename,extension=".png"):
+def create_path_dic(basename,extension=".png",one_level_only=False):
 
     root_path = "results/"
 
@@ -31,23 +31,37 @@ def create_path_dic(basename,extension=".png"):
     second_level_dic = {}
 
     for fkey in first_level_keys:
-        for skey in second_level_keys:
 
-            version_dir = fkey.lower()+"/"
-            metric_dir = skey.lower()+"/"
+        version_dir = fkey.lower()+"/"
 
-            filename = fkey.lower()+"_"+skey.lower()+"_"+basename+extension
+        if one_level_only:
 
-            entry = root_path+version_dir+metric_dir+filename
+                filename = fkey.lower()+"_"+basename+extension
 
-            second_level_dic.update({skey: entry})
+                entry = root_path+version_dir+filename
 
-        first_level_dic.update({fkey: second_level_dic})
-        second_level_dic = {}
+                first_level_dic.update({fkey: entry})
+
+        else:
+
+            for skey in second_level_keys:
+                metric_dir = skey.lower()+"/"
+
+                filename = fkey.lower()+"_"+skey.lower()+"_"+basename+extension
+
+                entry = root_path+version_dir+metric_dir+filename
+
+                second_level_dic.update({skey: entry})
+
+            first_level_dic.update({fkey: second_level_dic})
+            second_level_dic = {}
 
     return first_level_dic
 
-stats_path = create_path_dic("stats",".json")
+stats_path = create_path_dic("stats",extension=".json")
 individual_score_path = create_path_dic("individual_score")
 score_by_length_path = create_path_dic("score_by_length")
 score_repartition_path = create_path_dic("score_repartition")
+
+human_length_repartition_path = "results/human_sentence_length_repartition.png"
+mt_length_repartition_path = create_path_dic("sentence_length_repartition",extension=".png",one_level_only=True)
